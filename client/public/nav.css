@@ -1,0 +1,17 @@
+.nav_particle_container {
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  z-index: 0;
+  height: 120px;
+}
+
+.footer_particle_container {
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+  height: 120px;
+}
