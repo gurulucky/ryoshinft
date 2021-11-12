@@ -9,7 +9,6 @@ import {
   SET_STATUS,
   SET_ALERT,
   OPEN_ZKWALLET_DLG,
-  OPEN_SWAP_DLG,
   SET_ACCOUNT,
   SET_UNLOCK,
   SET_ZKSYNCWALLET,
@@ -32,19 +31,21 @@ import {
   GET_WITHDRAW_NFTS,
 } from './types';
 
-const CREATORS = ["0xCe9499b23a087d2494956C33a064E075EC23dafc", "0x490EEDCDe44ce5A78536A56fDf3984494a42253e"];
-const RYOSHI_PER_NFT = 1000; //
+console.log(process.env);
+const NETWORK = process.env.REACT_APP_NETWORK;
+const CREATORS = [process.env.REACT_APP_CREATOR, "0x490EEDCDe44ce5A78536A56fDf3984494a42253e"];
+const RYOSHI_PER_NFT = Number(process.env.REACT_APP_RYOSHI_PER_NFT); //
 const TOKEN_URI = 'https://ipfs.infura.io/ipfs/';
 const MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2/';///////   owner_address/nft/token_address  for get NFTs by owner
-const PARAMS_NET = 'chain=rinkeby&format=decimal';
+const PARAMS_NET = `chain=${NETWORK}&format=decimal`;
 const MORALIS_OPTION = {
   headers: {
     'accept': 'application/json',
     'X-API-Key': 'niA5R3R0oohLOT3tYoYpl18HeDSIg8vCLH8MPENlxKvUjbJ3j4o41zA9p1G1E2qx'
   }
 };
-const ZKSYNC_FACTORY_ADDRESS_LINK = '0x064e16771a4864561f767e4ef4a6989fc4045ae7';
-const ZKSYNC_FACTORY_ADDRESS_MAIN = '0x7C770595a2Be9A87CF49B35eA9bC534f1a59552D';
+const ZKSYNC_FACTORY_ADDRESS_LINK = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_LINK;
+const ZKSYNC_FACTORY_ADDRESS_MAIN = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_MAIN;
 
 export const setStatus = (status) => dispatch => {
   dispatch({
@@ -64,21 +65,6 @@ export const openZkWalletDLG = (open) => dispatch => {
   dispatch({
     type: OPEN_ZKWALLET_DLG,
     payload: open
-  })
-  dispatch({
-    type: OPEN_SWAP_DLG,
-    payload: false
-  })
-}
-
-export const openSwapDLG = (open) => dispatch => {
-  dispatch({
-    type: OPEN_SWAP_DLG,
-    payload: open
-  })
-  dispatch({
-    type: OPEN_ZKWALLET_DLG,
-    payload: false
   })
 }
 
@@ -113,7 +99,7 @@ export const setAccount = (account) => async dispatch => {
     if (account) {
       try {
 
-        const syncProvider = await zksync.getDefaultProvider('rinkeby');//'mainnet'
+        const syncProvider = await zksync.getDefaultProvider(NETWORK);//'mainnet'
         let provider;
         let signer;
         provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -564,31 +550,30 @@ export const mint = (key) => async (dispatch, getState) => {
       let receipt = await mintWiFia(zksyncWallet, amount, nft.tokenUri);
       if (receipt) {
         const transferRes = await api.post('ryoshi/transferRyoshi', { amount, to: zksyncWallet.address() });
-        if (transferRes.data.success) {
+        try {
           try {
-            try {
-              await api.post('ryoshi/mint', {
-                id: nft._id,
-                owner: account,
-                amount,
-                email,
-                nftIds: receipt
-              });
-              // dispatch({
-              //   type: MINT_SUCCESS,
-              //   payload: { nft, amount, email }
-              // });
-              dispatch(getAssets(email, account));
-              dispatch(setAlert(true, `${amount} NFTs(${nft.name}) is minted successfully.`));
-            } catch (err) {
-              console.log("mint err", err);
-              dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint failed. Please try again.`));
-            }
+            await api.post('ryoshi/mint', {
+              id: nft._id,
+              owner: account,
+              amount,
+              email,
+              nftIds: receipt
+            });
+            // dispatch({
+            //   type: MINT_SUCCESS,
+            //   payload: { nft, amount, email }
+            // });
+            dispatch(getAssets(email, account));
+            dispatch(setAlert(true, `${amount} NFTs(${nft.name}) is minted successfully.`));
           } catch (err) {
+            console.log("mint err", err);
             dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint failed. Please try again.`));
           }
-        } else {
+        } catch (err) {
           dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint failed. Please try again.`));
+        }
+        if (!transferRes.data.success) {
+          dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint success. But you don't get ryoshi. Please contact with Ryoshi NFT team.`));
         }
       } else {
         console.log("receipt", receipt);

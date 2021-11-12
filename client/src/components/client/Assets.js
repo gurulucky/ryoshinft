@@ -4,10 +4,9 @@ import { Stack, Container } from '@material-ui/core';
 // import { pinJSONToIPFS } from './pinata';
 import NftViewer from './assets/NftViewer';
 import ZkWalletDialog from '../dialog/ZksyncWallet';
-import SwapDialog from '../dialog/Swap';
 import InputKey from '../dialog/InputKey';
 import { AmountField, StyledTab, StyledTabs } from '../StyledComponent/StyledInput';
-import { setStatus, openZkWalletDLG, openPay, approve, openInputKey, mint, openSwapDLG } from '../../actions/manager';
+import { setStatus, openZkWalletDLG, openPay, approve, openInputKey, mint} from '../../actions/manager';
 
 
 
@@ -25,7 +24,7 @@ require('dotenv').config();
 //     "animation_url": ""
 // }
 
-const Assets = ({ zkwalletOpen, swapOpen, openZkWalletDLG, openSwapDLG, inputKeyOpen, openInputKey, mint }) => {
+const Assets = ({ zkwalletOpen,  openZkWalletDLG,  inputKeyOpen, openInputKey, mint }) => {
     const [email, setEmail] = useState("");
     const [key, setKey] = useState("");
     const [value, setValue] = React.useState(0);
@@ -37,7 +36,7 @@ const Assets = ({ zkwalletOpen, swapOpen, openZkWalletDLG, openSwapDLG, inputKey
     return (
         <Container sx={{ minHeight: window.innerHeight + 'px' }}>
             {
-                (!zkwalletOpen && !swapOpen) &&
+                !zkwalletOpen &&
                 <>
                     <Stack direction='row' justifyContent='center'>
                         <StyledTabs value={value} onChange={handleChange}>
@@ -64,7 +63,6 @@ const Assets = ({ zkwalletOpen, swapOpen, openZkWalletDLG, openSwapDLG, inputKey
                 </>
             }
             {zkwalletOpen && <ZkWalletDialog handleClose={() => { openZkWalletDLG(false) }} />}
-            {swapOpen && <SwapDialog handleClose={() => { openSwapDLG(false) }} />}
         </Container >
     );
 }
@@ -73,10 +71,8 @@ const Assets = ({ zkwalletOpen, swapOpen, openZkWalletDLG, openSwapDLG, inputKey
 const mapStateToProps = (state) => ({
     status: state.manager.status,
     zkwalletOpen: state.manager.zkwalletOpen,
-    swapOpen: state.manager.swapOpen,
-    // payOpen: state.manager.payOpen,
     inputKeyOpen: state.manager.inputKeyOpen,
     account: state.manager.account
 });
 
-export default connect(mapStateToProps, { setStatus, openZkWalletDLG, openSwapDLG, openPay, approve, openInputKey, mint })(Assets);
+export default connect(mapStateToProps, { setStatus, openZkWalletDLG,  openPay, approve, openInputKey, mint })(Assets);

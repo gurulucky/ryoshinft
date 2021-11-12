@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import Particle from 'react-particles-js';
 import particlesConfig from './particleConfig.json';
-import { setAccount, isManager, setAlert, openZkWalletDLG, openSwapDLG } from '../../actions/manager';
+import { setAccount, isManager, setAlert, openZkWalletDLG } from '../../actions/manager';
 import { Stack, Typography, Hidden, IconButton } from '@material-ui/core';
 import MenuIcon from '@mui/icons-material/Menu';
 import Web3 from 'web3'
@@ -13,11 +13,12 @@ import Alert from '../dialog/Alert';
 import { ConnectButton, NavMenuItem } from '../StyledComponent/StyledInput';
 import TemporaryDrawer from './NavDrawer';
 
+const NETWORK = process.env.REACT_APP_NETWORK;
 const RINKEBY_CHAINID = 4;
 const MAINNET_CHAINID = 1;
 
 
-const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText}, setAlert, openSwapDLG, setAccount, isManager }) => {
+const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText }, setAlert, openSwapDLG, setAccount, isManager }) => {
   const [initWeb3, setInitWeb3] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [tokenBalance, setTokenBalance] = useState("0");
@@ -33,8 +34,8 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
         // }
       });
       window.ethereum.on('networkChanged', function (networkId) {
-        if (Number(networkId) !== RINKEBY_CHAINID) {
-          setAlert(true, "Connect to rinkeby test network on metamask.");
+        if (Number(networkId) !== (NETWORK === 'rinkeby' ? RINKEBY_CHAINID : MAINNET_CHAINID)) {
+          setAlert(true, `Connect to ${NETWORK} network on metamask.`);
           setAccount("");
           return;
         }
@@ -61,8 +62,8 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
         const chainId = await window.ethereum.request({
           method: "eth_chainId"
         });
-        if (Number(chainId) !== RINKEBY_CHAINID) {
-          setAlert(true, "Connect to rinkeby test network on metamask.");
+        if (Number(chainId) !== (NETWORK === 'rinkeby' ? RINKEBY_CHAINID : MAINNET_CHAINID)) {
+          setAlert(true, `Connect to ${NETWORK} network on metamask.`);
           setAccount("");
           return;
         }
@@ -117,11 +118,11 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
                 Forge
               </NavMenuItem>
             </NavLink>
-            <a href='https://ryoshi.vision' style={{ textDecoration: 'none' }} target='_blank' rel="noreferrer">
+            <NavLink to='/buyryoshi' activeStyle={{ backgroundColor: "rgb(117 0 3)" }} style={{ textDecoration: 'none' }}>
               <NavMenuItem variant="h6" color="white">
                 Buy Ryoshi
               </NavMenuItem>
-            </a>
+            </NavLink>
             {
               isManager(account) ?
                 <NavLink to='/manager' activeStyle={{ backgroundColor: "rgb(117 0 3)" }} style={{ textDecoration: 'none' }}>
@@ -133,18 +134,18 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
             }
           </Hidden>
           <Stack direction="column" >
-            <Stack direction='row' spacing={1} sx={{mb:"-10px"}}>
+            <Stack direction='row' spacing={1} sx={{ mb: "-10px" }}>
               {
                 tokenBalance > 0 ?
-                  <Typography className="neonText_green" varient="h6" onClick={()=>openSwapDLG(true)}>You carry the Vision! </Typography>
+                  <Typography className="neonText_green" varient="h6">You carry the Vision! </Typography>
                   :
-                  <Typography className="neonText_red" varient="h6" onClick={()=>openSwapDLG(true)}>No Ryoshi! Click me or pay Fiat</Typography>
+                  <Typography className="neonText_red" varient="h6">No Ryoshi! Buy Ryoshi or pay Fiat</Typography>
               }
               {
-                unlock?
-                <Typography className="neonText_green" varient="h6">Unlocked </Typography>
-                :
-                <Typography className="neonText_red" varient="h6">Locked </Typography>
+                unlock ?
+                  <Typography className="neonText_green" varient="h6">Unlocked </Typography>
+                  :
+                  <Typography className="neonText_red" varient="h6">Locked </Typography>
               }
             </Stack>
             <ConnectButton variant="contained" disabled={!initWeb3} onClick={conMetamask} sx={{ textTransform: "inherit" }}>
@@ -163,4 +164,4 @@ const mapStateToProps = (state) => ({
   manager: state.manager
 });
 
-export default connect(mapStateToProps, { setAccount, isManager, setAlert, openZkWalletDLG, openSwapDLG })(Navbar);
+export default connect(mapStateToProps, { setAccount, isManager, setAlert, openZkWalletDLG })(Navbar);

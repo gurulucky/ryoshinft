@@ -5,7 +5,6 @@ const initialState = {
   alertText: "",
   alertOpen: false,
   zkwalletOpen: false,
-  swapOpen: false,
   payOpen: false,
   paid: false,
   account: "",
@@ -103,11 +102,6 @@ function managerReducer(state = initialState, action) {
       return {
         ...state,
         zkwalletOpen: payload
-      };
-    case types.OPEN_SWAP_DLG:
-      return {
-        ...state,
-        swapOpen: payload
       };
     case types.SET_PAY:
       return {

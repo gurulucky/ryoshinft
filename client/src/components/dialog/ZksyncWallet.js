@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Stack, Typography } from '@material-ui/core';
 import { BuyButton } from '../StyledComponent/StyledInput';
 
+const NETWORK = process.env.REACT_APP_NETWORK;
+
 const ZkWalletDialog = (props) => {
     return (
         <Stack direction='column' spacing={1} justifyContent='center'>
@@ -11,7 +13,7 @@ const ZkWalletDialog = (props) => {
                     Close
                 </BuyButton>
             </Stack>
-            <iframe src="https://rinkeby.zksync.io/account" title="W3Schools Free Online Web Tutorials" width="100%" height="600px"></iframe>
+            <iframe src={NETWORK === 'rinkeby' ? `https://rinkeby.zksync.io/account` : `https://wallet.zksync.io/account`} title="Zksync wallet" width="100%" height="600px"></iframe>
         </Stack>
     );
 }

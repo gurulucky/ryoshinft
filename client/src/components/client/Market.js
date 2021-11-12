@@ -5,7 +5,7 @@ import { Container } from '@material-ui/core';
 import NftViewer from './nfts/NftViewer';
 import ZkWalletDialog from '../dialog/ZksyncWallet';
 import Payment from '../dialog/Payment';
-import { setStatus, openZkWalletDLG, openPay, approve } from '../../actions/manager';
+import { setStatus, openZkWalletDLG,  openPay, approve } from '../../actions/manager';
 import { getTokenBalance } from '../../lib/minter';
 
 require('dotenv').config();
@@ -35,14 +35,14 @@ const Market = ({ account, zksyncWallet, zkwalletOpen, openZkWalletDLG, openPay,
     return (
         <Container sx={{ py: "20px", minHeight: window.innerHeight + 'px' }}>
             {
-                !zkwalletOpen ?
-                    <>
-                        <NftViewer ryoshi={ryoshiBalance} />
-                        <Payment open={payOpen} amount={amount} handleClose={() => openPay(false)} handleOk={approve} />
-                    </>
-                    :
-                    <ZkWalletDialog handleClose={()=>openZkWalletDLG(false)}/>
+                !zkwalletOpen &&
+                <>
+                    <NftViewer ryoshi={ryoshiBalance} />
+                    <Payment open={payOpen} amount={amount} handleClose={() => openPay(false)} handleOk={approve} />
+                </>
             }
+            {zkwalletOpen && <ZkWalletDialog handleClose={() => { openZkWalletDLG(false) }} />}
+
         </Container>
     );
 }

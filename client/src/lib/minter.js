@@ -1,11 +1,13 @@
 import { ryoshi_nft_abi, ryoshi_token_abi } from '../artifacts/abi';
 import { ethers } from 'ethers';
+
+const NETWORK = process.env.REACT_APP_NETWORK;
 const NFT_ADDRESS_TEST = "0xbC014A7eDA1e152d0E512eE5F5f16B9618a06E41";
-const RYOSHI_ADDRESS_TEST = "0x5290f2a89654d5fe181858929c931fce17550a77";
-const RYOSHI_ADDRESS_MAIN = '0x777e2ae845272a2f540ebf6a3d03734a5a8f618e';
-const DAI_ADDRESS_TEST = "0x2e055eee18284513b993db7568a592679ab13188";
-// const CREATORS = ["0xCe9499b23a087d2494956C33a064E075EC23dafc", "0x490EEDCDe44ce5A78536A56fDf3984494a42253e"];
-const CREATOR = "0xCe9499b23a087d2494956C33a064E075EC23dafc";
+const RYOSHI_ADDRESS_TEST = process.env.REACT_APP_RYOSHI_ADDRESS_TEST;
+const RYOSHI_ADDRESS_MAIN = process.env.REACT_APP_RYOSHI_ADDRESS_MAIN;
+const DAI_ADDRESS_TEST = process.env.REACT_APP_DAI_ADDRESS_TEST;
+const CREATORS = [process.env.REACT_APP_CREATOR, "0x490EEDCDe44ce5A78536A56fDf3984494a42253e"];
+// const CREATOR = "0xCe9499b23a087d2494956C33a064E075EC23dafc";
 
 
 // export const mintWiCry = async (account, amount, tokenUri, minPrice) => {
@@ -55,7 +57,7 @@ export const mintWiCry = async (zksyncWallet, amount, tokenUri, minPrice) => {
     const contentHash = "0x" + getContentHashFromUri(tokenUri);
     // console.log(zksyncWallet);
     try {
-        const res = await transferEth(zksyncWallet, CREATOR, minPrice * amount);
+        const res = await transferEth(zksyncWallet, CREATORS[0], minPrice * amount);
         if (res) {
             for (let i = 0; i < amount; i++) {
                 const nft = await zksyncWallet.mintNFT({
@@ -162,11 +164,11 @@ export const getTokenBalance = async (account, zksyncWallet) => {
     if (!account) {
         return "0";
     }
-    let ryoshiContract = new window.web3.eth.Contract(ryoshi_token_abi, RYOSHI_ADDRESS_TEST);
+    let ryoshiContract = new window.web3.eth.Contract(ryoshi_token_abi, NETWORK === 'rinkeby' ? RYOSHI_ADDRESS_TEST : RYOSHI_ADDRESS_MAIN);
     let ryoshi_L1 = ethers.utils.formatEther(await ryoshiContract.methods.balanceOf(account).call());
     let ryoshi_L2 = 0;
     if (zksyncWallet)
-        ryoshi_L2 = ethers.utils.formatEther(await zksyncWallet.getBalance(DAI_ADDRESS_TEST, 'verified'));
+        ryoshi_L2 = ethers.utils.formatEther(await zksyncWallet.getBalance(NETWORK === 'rinkeby' ? DAI_ADDRESS_TEST : RYOSHI_ADDRESS_MAIN, 'verified'));
     console.log('ryoshi balance', Number(ryoshi_L1) + Number(ryoshi_L2));
     return Number(ryoshi_L1) + Number(ryoshi_L2);
 }

@@ -4,6 +4,7 @@ import Drop from '../client/Drop'
 import Manager from '../manager/Manager';
 import Market from '../client/Market';
 import Assets from '../client/Assets';
+import BuyRyoshi from '../client/BuyRyoshi';
 
 const Routes = () => {
   return (
@@ -14,6 +15,7 @@ const Routes = () => {
         <Route exact path="/manager" render={(routeProps) => <Manager/>} />
         <Route exact path="/market" component={Market} />
         <Route exact path="/assets" component={Assets} />
+        <Route exact path="/buyryoshi" component={BuyRyoshi} />
       </Switch>
     </section>
   );

@@ -11,7 +11,6 @@ import { AmountField, BuyButton } from '../StyledComponent/StyledInput';
 
 import { createNFT, setStatus, setAlert, isManager, updateNFT } from '../../actions/manager';
 // import { pinJSONToIPFS } from './pinata';
-require('dotenv').config();
 
 const key = process.env.REACT_APP_PINATA_KEY;
 const secret = process.env.REACT_APP_PINATA_SECRET;

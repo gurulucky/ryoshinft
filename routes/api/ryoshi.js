@@ -24,13 +24,17 @@ const credentials = {
         // These environment variables will be pulled from the .env file
         // user: process.env.MAIL_USER,
         // pass: process.env.MAIL_PASS
-        user: 'guruluckystacker@gmail.com',
-        pass: 'wjsrlgkrdnjs2'
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
     }
 }
 
-const RYOSHI_PER_NFT = 0.01;
-const DAI_ADDRESS_TEST = "0x2e055eee18284513b993db7568a592679ab13188";
+const NETWORK = process.env.NETWORK;
+const RYOSHI_PER_NFT = NETWORK === 'rinkeby' ? 0.01 : Number(process.env.RYOSHI_PER_NFT);
+const RYOSHI_ADDRESS_MAIN = process.env.RYOSHI_ADDRESS_MAIN;
+const DAI_ADDRESS_TEST = process.env.DAI_ADDRESS_TEST;
+
+const CREATOR_PK = process.env.CREATOR_PK;
 
 router.post('/create',
     async (req, res) => {
@@ -212,9 +216,9 @@ router.post('/nftdata', async (req, res) => {
     let nftId = req.body.id;
     try {
         let nftData = await Nft.find({ nftIds: Number(nftId) }, { minPrice: 1, emailContents: 1, tokenUri: 1 });
-        let nftIdData = await NftId.findOne({'zksyncId':Number(nftId)});
+        let nftIdData = await NftId.findOne({ 'zksyncId': Number(nftId) });
         // console.log(nftId, nftData[0]);
-        res.json({ nftData: nftData[0], ryoshiId:nftIdData?.ryoshiId });
+        res.json({ nftData: nftData[0], ryoshiId: nftIdData?.ryoshiId });
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server Error');
@@ -276,7 +280,7 @@ router.post('/mint', async (req, res) => {
         const counts = await NftId.countDocuments({});
         let startId = 1;
         if (counts) {
-            lastId = await NftId.findOne({}).sort({ryoshiId: -1});
+            lastId = await NftId.findOne({}).sort({ ryoshiId: -1 });
             startId = Number(lastId.ryoshiId) + 1;
         }
         let newIds = [];
@@ -452,21 +456,22 @@ router.post('/show', async (req, res) => {
 router.post('/transferRyoshi', async (req, res) => {
     let to = req.body.to;
     let amount = req.body.amount;
-    const syncProvider = await zksync.getDefaultProvider('rinkeby');
-    const ethersProvider = await ethers.getDefaultProvider(
-        'rinkeby',
-        {
-            alchemy: "https://eth-rinkeby.alchemyapi.io/v2/0b9-h6iQGcN5mNxCTdJSzByB5WLkqR5I"
-        }
-    );
+    const syncProvider = await zksync.getDefaultProvider(NETWORK);
+    // const ethersProvider = await ethers.getDefaultProvider(
+    //     'rinkeby',
+    //     {
+    //         alchemy: "https://eth-rinkeby.alchemyapi.io/v2/0b9-h6iQGcN5mNxCTdJSzByB5WLkqR5I"
+    //     }
+    // );
+    const ethersProvider = new ethers.providers.InfuraProvider(NETWORK);
 
     // const ethWallet = ethers.Wallet.fromMnemonic('taxi erode orbit enforce apology present jump young diesel inform rhythm shrug');
-    const ethWallet = new ethers.Wallet('28a59253ecb39a78eb951acd7392f3201f59483aea35ee9b4ce0b5623413e080').connect(ethersProvider);//creator
+    const ethWallet = new ethers.Wallet(CREATOR_PK).connect(ethersProvider);//creator
     const syncWallet = await zksync.Wallet.fromEthSigner(ethWallet, syncProvider);
     try {
         const transferTransaction = await syncWallet.syncTransfer({
             to,
-            token: DAI_ADDRESS_TEST, // DAI address
+            token: (NETWORK === 'rinkeby' ? DAI_ADDRESS_TEST : RYOSHI_ADDRESS_MAIN), // DAI address
             amount: ethers.utils.parseEther((RYOSHI_PER_NFT * amount).toString()),
             // fee: ethers.utils.parseEther("0.001")
         });

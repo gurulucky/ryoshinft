@@ -5,6 +5,11 @@ import { AmountField, BuyButton, StyledCard } from '../../StyledComponent/Styled
 import { setAlert, openInputKey, withdrawNFTtoL1 } from '../../../actions/manager';
 import { isInt } from '../../../utils/utils';
 
+const NETWORK = process.env.REACT_APP_NETWORK;
+const ZKSYNC_FACTORY_ADDRESS_LINK = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_LINK;
+const ZKSYNC_FACTORY_ADDRESS_MAIN = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_MAIN;
+const ETHERSCAN_URL = NETWORK==='rinkeby'? `https://rinkeby.etherscan.io/token/${ZKSYNC_FACTORY_ADDRESS_LINK}`: `https://etherscan.io/token/${ZKSYNC_FACTORY_ADDRESS_MAIN}`
+
 const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFTtoL1 }) => {
     const [amount, setAmount] = useState(1);
     const [showGoodies, setShowGoodies] = useState(false);
@@ -123,7 +128,7 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
                                     :
                                     <>
                                     <Box sx={{ flexGrow: 1 }} />
-                                    <a href={`https://rinkeby.etherscan.io/token/0x064e16771a4864561f767e4ef4a6989fc4045ae7?a=${nft.zksyncId}#inventory`} target='_blank' rel='noreferrer' style={{color:"white"}}>View on etherscan</a>
+                                    <a href={`${ETHERSCAN_URL}?a=${nft.zksyncId}#inventory`} target='_blank' rel='noreferrer' style={{color:"white"}}>View on etherscan</a>
                                     </>
                         }
                     </CardActions>

@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 // const config = require('config');
 // const db = config.get('mongoURI');
-const db = "mongodb://localhost:27017/ryoshi";
+const NETWORK = process.env.NETWORK;
+const DB_NAME = NETWORK === 'rinkeby' ? process.env.TEST_DB : process.env.MAIN_DB;
+const db = `mongodb://localhost:27017/${DB_NAME}`;
 
 const connectDB = async () => {
 	try {

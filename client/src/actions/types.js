@@ -2,7 +2,6 @@ export const SET_STATUS = 'SET_STATUS';
 export const SET_ALERT = 'SET_ALERT';
 export const SET_ACCOUNT = 'SET_ACCOUNT';
 export const OPEN_ZKWALLET_DLG = 'OPEN_ZKWALLET_DLG';
-export const OPEN_SWAP_DLG = 'OPEN_SWAP_DLG';
 export const SET_UNLOCK = 'SET_UNLOCK';
 export const SET_ZKSYNCWALLET = 'SET_ZKSYNCWALLET';
 export const CREATE_NFT = 'CREATE_NFT';
