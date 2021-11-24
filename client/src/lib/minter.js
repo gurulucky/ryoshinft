@@ -101,8 +101,7 @@ export const mintWiFia = async (zksyncWallet, amount, tokenUri) => {
         }
         const state = await zksyncWallet.getAccountState(zksyncWallet.address());
         const comitNftIds = Object.keys(state.committed.nfts);
-        const veriNftIds = Object.keys(state.verified.nfts);
-        mintedNFTs = comitNftIds.filter(nftId => veriNftIds.indexOf(nftId) === -1);
+        mintedNFTs = comitNftIds.slice(comitNftIds.length - amount);
         // const state = await zksyncWallet.getAccountState(zksyncWallet.address());
         console.log('mintedNFTs', mintedNFTs);
         return mintedNFTs;
@@ -168,7 +167,7 @@ export const getTokenBalance = async (account, zksyncWallet) => {
     let ryoshi_L1 = ethers.utils.formatEther(await ryoshiContract.methods.balanceOf(account).call());
     let ryoshi_L2 = 0;
     if (zksyncWallet)
-        ryoshi_L2 = ethers.utils.formatEther(await zksyncWallet.getBalance(NETWORK === 'rinkeby' ? DAI_ADDRESS_TEST : RYOSHI_ADDRESS_MAIN, 'verified'));
+        ryoshi_L2 = ethers.utils.formatEther(await zksyncWallet.getBalance(NETWORK === 'rinkeby' ? DAI_ADDRESS_TEST : RYOSHI_ADDRESS_MAIN, 'committed'));
     console.log('ryoshi balance', Number(ryoshi_L1) + Number(ryoshi_L2));
     return Number(ryoshi_L1) + Number(ryoshi_L2);
 }

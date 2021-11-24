@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 // const ipfsAPI = require('ipfs-api');
 // const fs = require('fs');
 const router = express.Router();

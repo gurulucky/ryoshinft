@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import "./stripe.css";
-const promise = loadStripe(process.env.STRIPE_PUBKEY_TEST);
+const promise = loadStripe(process.env.REACT_APP_STRIPE_PUBKEY_TEST);
 
 const Payment = (props) => {        
     return (

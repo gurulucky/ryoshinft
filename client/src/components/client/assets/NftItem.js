@@ -8,7 +8,7 @@ import { isInt } from '../../../utils/utils';
 const NETWORK = process.env.REACT_APP_NETWORK;
 const ZKSYNC_FACTORY_ADDRESS_LINK = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_LINK;
 const ZKSYNC_FACTORY_ADDRESS_MAIN = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_MAIN;
-const ETHERSCAN_URL = NETWORK==='rinkeby'? `https://rinkeby.etherscan.io/token/${ZKSYNC_FACTORY_ADDRESS_LINK}`: `https://etherscan.io/token/${ZKSYNC_FACTORY_ADDRESS_MAIN}`
+const ETHERSCAN_URL = NETWORK === 'rinkeby' ? `https://rinkeby.etherscan.io/token/${ZKSYNC_FACTORY_ADDRESS_LINK}` : `https://etherscan.io/token/${ZKSYNC_FACTORY_ADDRESS_MAIN}`
 
 const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFTtoL1 }) => {
     const [amount, setAmount] = useState(1);
@@ -79,12 +79,21 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
                                 <Typography gutterBottom variant="body1" color="rgb(221, 221, 221)">
                                     {`${nft.name}`}
                                 </Typography>
-                                <Typography gutterBottom variant="body1" color="rgb(221, 221, 221)">
-                                    Ryoshi-{nft.ryoshiId || 'none'}
-                                </Typography>
-                                <Typography gutterBottom variant="body2" color="rgb(221, 221, 221)">
-                                    Zk-{nft.zksyncId || 'none'}
-                                </Typography>
+                                {
+                                    nft.type === 'approve' ?
+                                        <Typography variant="body2" color="rgb(221, 221, 221)">
+                                            {`Left: ${nft.amount}`}
+                                        </Typography>
+                                        :
+                                        <>
+                                            <Typography gutterBottom variant="body1" color="rgb(221, 221, 221)">
+                                                Ryoshi-{nft.ryoshiId || 'none'}
+                                            </Typography>
+                                            <Typography gutterBottom variant="body2" color="rgb(221, 221, 221)">
+                                                Zk-{nft.zksyncId || 'none'}
+                                            </Typography>
+                                        </>
+                                }
                                 <Stack direction="row" spacing={1} alignItems="center">
                                     <Typography gutterBottom variant="body2" color="rgb(221, 221, 221)" sx={{ m: "0px" }}>
                                         {`${nft.minPrice}`}
@@ -102,7 +111,7 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
                             nft.amount && nft.type === "approve" ?
                                 <>
                                     {/* <Stack direction="row" justifyContent="center" spacing={2}> */}
-                                    <AmountField name="amount" label="amount" type="number" size='small' InputProps={{ inputProps: { min: 1, max: nft.left } }} defaultValue="1" onChange={(e) => setAmount(parseInt(e.target.value))}
+                                    <AmountField name="amount" label="amount" type="number" size='small' InputProps={{ inputProps: { min: 1, max: nft.left } }} value={amount} onChange={(e) => setAmount(parseInt(e.target.value))}
                                         sx={{
                                             mr: "8px",
                                             width: "130px"
@@ -127,8 +136,8 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
                                     </>
                                     :
                                     <>
-                                    <Box sx={{ flexGrow: 1 }} />
-                                    <a href={`${ETHERSCAN_URL}?a=${nft.zksyncId}#inventory`} target='_blank' rel='noreferrer' style={{color:"white"}}>View on etherscan</a>
+                                        <Box sx={{ flexGrow: 1 }} />
+                                        <a href={`${ETHERSCAN_URL}?a=${nft.zksyncId}#inventory`} target='_blank' rel='noreferrer' style={{ color: "white" }}>View on etherscan</a>
                                     </>
                         }
                     </CardActions>

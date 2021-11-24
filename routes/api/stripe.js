@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const stripe = require("stripe")(process.env.STRIPE_PK_TEST);
 const router = express.Router();
 

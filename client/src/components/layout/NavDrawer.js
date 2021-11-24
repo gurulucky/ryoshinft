@@ -31,11 +31,16 @@ export default function TemporaryDrawer(props) {
           Forge
         </NavMenuItem>
       </Link>
-      <a href='https://ryoshi.vision' style={{ textDecoration: 'none' }} target='_blank' rel="noreferrer">
+      <Link to='/buyeth' style={{ textDecoration: 'none' }}>
+        <NavMenuItem variant="h6" color="white">
+          Buy ETH
+        </NavMenuItem>
+      </Link>
+      <Link to='/buyryoshi' style={{ textDecoration: 'none' }}>
         <NavMenuItem variant="h6" color="white">
           Buy Ryoshi
         </NavMenuItem>
-      </a>
+      </Link>
       {
         props.manager ?
           <Link to='/manager' style={{ textDecoration: 'none' }}>

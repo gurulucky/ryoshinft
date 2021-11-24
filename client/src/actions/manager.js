@@ -336,7 +336,9 @@ export const getZkNFTs = () => async (dispatch, getState) => {
           content = response.data;
         });
         const res = await api.post('/ryoshi/nftdata', { id: comitNfts[comitNftIds[i]].id });
-        fullNfts.push({ zksyncId: comitNfts[comitNftIds[i]].id, status: 'pending', type: "mint", ...content, ...res.data.nftData, ryoshiId: res.data.ryoshiId });
+        if (res.data.ryoshiId) {
+          fullNfts.push({ zksyncId: comitNfts[comitNftIds[i]].id, status: 'pending', type: "mint", ...content, ...res.data.nftData, ryoshiId: res.data.ryoshiId });
+        }
       }
       // console.log(veriNftIds);
       fullNfts = fullNfts.map(nft => {
@@ -400,16 +402,18 @@ export const getWithdrawNFTs = () => async (dispatch, getState) => {
         let content = [];
         let tokenUri = "";
         const res = await api.post('/ryoshi/nftdata', { id: zkNfts[i].token_id });
-        if (res.data.nftData) {
-          console.log(res.data);
-          tokenUri = res.data.nftData.tokenUri;
+        if (res.data.ryoshiId) {
+          if (res.data.nftData) {
+            console.log(res.data);
+            tokenUri = res.data.nftData.tokenUri;
+          }
+          if (tokenUri) {
+            await axios.get(res.data.nftData.tokenUri).then((response) => {
+              content = response.data;
+            });
+          }
+          fullNfts.push({ zksyncId: zkNfts[i].token_id, type: "withdraw", ...content, ...res.data.nftData, ryoshiId: res.data.ryoshiId });
         }
-        if (tokenUri) {
-          await axios.get(res.data.nftData.tokenUri).then((response) => {
-            content = response.data;
-          });
-        }
-        fullNfts.push({ zksyncId: zkNfts[i].token_id, type: "withdraw", ...content, ...res.data.nftData, ryoshiId: res.data.ryoshiId });
       }
       dispatch({
         type: GET_WITHDRAW_NFTS,
@@ -550,30 +554,29 @@ export const mint = (key) => async (dispatch, getState) => {
       let receipt = await mintWiFia(zksyncWallet, amount, nft.tokenUri);
       if (receipt) {
         const transferRes = await api.post('ryoshi/transferRyoshi', { amount, to: zksyncWallet.address() });
+
         try {
-          try {
-            await api.post('ryoshi/mint', {
-              id: nft._id,
-              owner: account,
-              amount,
-              email,
-              nftIds: receipt
-            });
-            // dispatch({
-            //   type: MINT_SUCCESS,
-            //   payload: { nft, amount, email }
-            // });
-            dispatch(getAssets(email, account));
+          await api.post('ryoshi/mint', {
+            id: nft._id,
+            owner: account,
+            amount,
+            email,
+            nftIds: receipt
+          });
+          dispatch({
+            type: MINT_SUCCESS,
+            payload: { nft, amount, email }
+          });
+          // dispatch(getAssets(email, account));
+          // console.log('minted',nft);
+          if (!transferRes.data.success) {
+            dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint success. But you don't get ryoshi. Please contact with Ryoshi NFT team.`));
+          }else{
             dispatch(setAlert(true, `${amount} NFTs(${nft.name}) is minted successfully.`));
-          } catch (err) {
-            console.log("mint err", err);
-            dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint failed. Please try again.`));
           }
         } catch (err) {
+          console.log("mint err", err);
           dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint failed. Please try again.`));
-        }
-        if (!transferRes.data.success) {
-          dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint success. But you don't get ryoshi. Please contact with Ryoshi NFT team.`));
         }
       } else {
         console.log("receipt", receipt);

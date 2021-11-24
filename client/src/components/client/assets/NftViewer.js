@@ -6,6 +6,9 @@ import { StyledCircleProgress } from '../../StyledComponent/StyledInput';
 import NftItem from './NftItem';
 import { getAssets, getZkNFTs, getWithdrawNFTs } from '../../../actions/manager';
 
+const NETWORK = process.env.REACT_APP_NETWORK;
+const ZKSYNC_SCAN_URL = NETWORK === 'rinkeby' ? 'https://rinkeby.zkscan.io/explorer/accounts/' : 'https://zkscan.io/explorer/accounts/';
+
 const NftViewer = ({ email, account, nfts, zkNfts, withdrawNfts, unlock, loadingAssets, getAssets, getZkNFTs, getWithdrawNFTs, type }) => {
     useEffect(() => {
         if (type === "approve") {
@@ -24,12 +27,24 @@ const NftViewer = ({ email, account, nfts, zkNfts, withdrawNfts, unlock, loading
         {((type === "mint" || type === 'withdraw') && !zkNfts.length && !loadingAssets) && <Typography variant="body1" color="white" textAlign='center'>If you don't see your assets, please connect to your wallet or input your email to load</Typography>} */}
         {account ?
             ((type === 'approve' && !nfts.length) || ((type === "mint" || type === 'withdraw') && (!zkNfts.length || !withdrawNfts.length) && !loadingAssets)) &&
-            < Typography variant="body1" color="white" textAlign='center'>There is nothing.</Typography>
+            <>
+                < Typography variant="body1" color="white" textAlign='center'>
+                    There is nothing.
+                </Typography>
+                {
+                    type === 'withdraw' &&
+                    < Typography variant="body1" color="white" textAlign='center'>
+                        If you want to see NFTs being withdrawn, you can check transactions&nbsp;
+                        <a href={ZKSYNC_SCAN_URL + account} target='_blank' rel='noreferrer' style={{ color: "white" }}>here.</a>
+                    </ Typography>
+                }
+            </>
             :
             < Typography variant="body1" color="white" textAlign='center'>If you don't see your assets, please connect to your wallet or input your email to load</Typography>
         }
         {
-            loadingAssets && <Stack direction='row' justifyContent='center' alignItems='center'>
+            loadingAssets &&
+            <Stack direction='row' justifyContent='center' alignItems='center'>
                 <StyledCircleProgress />
                 <Typography variant="body1" color="white" sx={{ marginLeft: "15px" }}>Loading now, please wait... </Typography>
             </Stack>

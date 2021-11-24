@@ -29,7 +29,7 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
       window.web3 = new Web3(window.ethereum);
       window.ethereum.on('accountsChanged', function (accounts) {
         // if (accounts[0] !== account) {
-        // console.log("change", accounts[0]);
+        console.log("change", accounts[0]);
         conMetamask();
         // }
       });
@@ -52,6 +52,7 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
       setAccount("");
       return;
     }
+    console.log('changed');
     if (window.ethereum) {
       try {
         // const addressArray = await window.ethereum.request({
@@ -68,6 +69,7 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
           return;
         }
         const accounts = await window.ethereum.enable();
+        console.log(accounts);
         setAccount(accounts[0] !== undefined ? accounts[0] : "");
       } catch (err) {
       }
@@ -116,6 +118,11 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
             <NavLink to='/assets' activeStyle={{ backgroundColor: "rgb(117 0 3)" }} style={{ textDecoration: 'none' }}>
               <NavMenuItem variant="h6" color="white">
                 Forge
+              </NavMenuItem>
+            </NavLink>
+            <NavLink to='/buyeth' activeStyle={{ backgroundColor: "rgb(117 0 3)" }} style={{ textDecoration: 'none' }}>
+              <NavMenuItem variant="h6" color="white">
+                Buy ETH
               </NavMenuItem>
             </NavLink>
             <NavLink to='/buyryoshi' activeStyle={{ backgroundColor: "rgb(117 0 3)" }} style={{ textDecoration: 'none' }}>

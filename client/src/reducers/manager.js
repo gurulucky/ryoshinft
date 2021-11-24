@@ -137,13 +137,18 @@ function managerReducer(state = initialState, action) {
       // let nfts = [...state.nfts];
       // let index = nfts.findIndex(item => item.tokenId === payload);
       // nfts[index].status = 1;  
-      // console.log(nfts[index]);
+      // console.log('mint success', payload);
       return {
         ...state,
         nfts: state.nfts.map(item => {
           if (item._id === payload.nft._id) {
-            let left = item.left - payload.amount;
-            return { ...item, left };
+            if(item.hasOwnProperty('left')){
+              let left = item.left - payload.amount;
+              return { ...item, left };
+            }else if(item.hasOwnProperty('amount')){
+              let amount = item.amount - payload.amount;
+              return { ...item, amount };
+            }
           }
           return item;
         })

@@ -20,13 +20,14 @@ require('dotenv').config();
 //     "animation_url": ""
 // }
 
-const BuyRyoshi = ({ zkwalletOpen, openZkWalletDLG }) => {
+const BuyEth = ({ zkwalletOpen, openZkWalletDLG }) => {
     return (
-        <Container sx={{ minHeight: window.innerHeight + 'px', py:"20px"  }}>
+        <Container sx={{ minHeight: window.innerHeight + 'px', py:"20px" }}>
             {
                 !zkwalletOpen &&
                 <iframe
-                    src="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x777e2ae845272a2f540ebf6a3d03734a5a8f618e"
+                    src="https://buy.moonpay.com/?defaultCurrencyCode=eth"
+                    allow="accelerometer; autoplay; camera; gyroscope; payment"
                     title='uniswap'
                     height="660px"
                     width="100%"
@@ -40,7 +41,7 @@ const BuyRyoshi = ({ zkwalletOpen, openZkWalletDLG }) => {
                     }}
                 />
             }
-            {zkwalletOpen && <ZkWalletDialog handleClose={() => { openZkWalletDLG(false) }} />}
+            { zkwalletOpen && <ZkWalletDialog handleClose={() => { openZkWalletDLG(false) }} />}
         </Container >
     );
 }
@@ -50,4 +51,4 @@ const mapStateToProps = (state) => ({
     zkwalletOpen: state.manager.zkwalletOpen,
 });
 
-export default connect(mapStateToProps, { openZkWalletDLG })(BuyRyoshi);
+export default connect(mapStateToProps, { openZkWalletDLG })(BuyEth);
