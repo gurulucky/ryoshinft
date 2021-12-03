@@ -209,7 +209,8 @@ router.post('/assets', async (req, res) => {
         res.json(nfts);
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.json({nfts:null});
+        // res.status(500).send('Server Error');
     }
 });
 
