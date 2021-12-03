@@ -8,7 +8,7 @@ const db = `mongodb://localhost:27017/${DB_NAME}`;
 
 const connectDB = async () => {
 	try {
-		await mongoose.connect(process.env.MONGODB_URI || db, {
+		await mongoose.connect((NETWORK === 'rinkeby' ? process.env.MONGODB_URI_TEST : process.env.MONGODB_URI_MAIN) || db, {
 			useNewUrlParser: true,
 			useCreateIndex: true,
 			useFindAndModify: false,

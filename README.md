@@ -1,3 +1,5 @@
+# mongo uri test
+mongodb+srv://gurulucky:wjsrlgkrdnjs2@cluster0.ujnss.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
