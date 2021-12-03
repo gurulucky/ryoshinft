@@ -222,7 +222,7 @@ router.post('/nftdata', async (req, res) => {
         res.json({ nftData: nftData[0], ryoshiId: nftIdData?.ryoshiId });
     } catch (err) {
         console.log(err.message);
-        res.status(500).send('Server Error');
+        res.json({nftData:null, ryoshiId:null})
     }
 });
 
