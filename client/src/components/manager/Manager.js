@@ -4,12 +4,11 @@ import { useHistory } from 'react-router';
 import { create } from 'ipfs-http-client'
 import { Stack, MenuItem, Container } from '@material-ui/core';
 // import {writeJsonFile} from 'write-json-file';
-import Alert from '../dialog/Alert';
 import NftViewer from './nfts/NftViewer';
 import { isInt } from '../../utils/utils';
 import { AmountField, BuyButton } from '../StyledComponent/StyledInput';
 
-import { createNFT, setStatus, setAlert, isManager, updateNFT } from '../../actions/manager';
+import { createNFT,  setAlert, isManager, updateNFT } from '../../actions/manager';
 // import { pinJSONToIPFS } from './pinata';
 
 const key = process.env.REACT_APP_PINATA_KEY;
@@ -35,7 +34,7 @@ const UPLOAD_TYPE = {
 //     "animation_url": ""
 // }
 
-const Manager = ({ account, status, alertOpen, alertText, createNFT, setStatus, setAlert, isManager, updateNFT }) => {
+const Manager = ({ account, status, alertOpen, alertText, createNFT,  setAlert, isManager, updateNFT }) => {
     const history = useHistory();
     const [imageUrl, setImageUrl] = useState('https://ipfs.infura.io/ipfs/QmTXA1brmnYViGB9uw7bNV12steixP56BBMmDQxxmfyByX');
     const [metadataUrl, setMetadataUrl] = useState('https://gateway.pinata.cloud/ipfs/QmY9y2RjBADkChVzY5VLE3PbiAwtBA69cSRjoiPpCP3T5G');//0x122091d830aff41295483756078d01f8d8641f79974bc70a5dc1e6a2e467d28471ef
@@ -56,7 +55,7 @@ const Manager = ({ account, status, alertOpen, alertText, createNFT, setStatus, 
         const file = e.target.files[0];
         // pinFileToIPFS(file);
         try {
-            setStatus('uploading file...');
+            console.log('uploading file...');
             const added = await client.add(file)
             // console.log(added);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
@@ -65,7 +64,7 @@ const Manager = ({ account, status, alertOpen, alertText, createNFT, setStatus, 
             } else if (type === UPLOAD_TYPE.METADATA) {
                 setMetadataUrl(url);
             }
-            setStatus(type + ' is uploaded at:' + url);
+            console.log(type + ' is uploaded at:' + url);
         } catch (error) {
             console.log('Error uploading file: ', error)
         }
@@ -95,7 +94,7 @@ const Manager = ({ account, status, alertOpen, alertText, createNFT, setStatus, 
         }
 
         //make metadata
-        setStatus("metadata uploading now");
+        console.log("metadata uploading now");
         const metadata = {};
         metadata.name = metaData.name;
         metadata.image = imageUrl;
@@ -117,11 +116,11 @@ const Manager = ({ account, status, alertOpen, alertText, createNFT, setStatus, 
         })
             .then(function (response) {
                 setMetadataUrl("https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash);
-                setStatus("metadata uploaded at https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash);
+                console.log("metadata uploaded at https://gateway.pinata.cloud/ipfs/" + response.data.IpfsHash);
                 setDisable(false);
             })
             .catch(function (error) {
-                setStatus("metadata upload fail", error.message);
+                console.log("metadata upload fail", error.message);
                 setDisable(false);
             });
     };
@@ -330,4 +329,4 @@ const mapStateToProps = (state) => ({
     account: state.manager.account
 })
 
-export default connect(mapStateToProps, { createNFT, setStatus, setAlert, isManager, updateNFT })(Manager);
+export default connect(mapStateToProps, { createNFT, setAlert, isManager, updateNFT })(Manager);

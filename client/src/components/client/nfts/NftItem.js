@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 import { Grid, Stack, CardActionArea, CardActions, CardContent, Typography, Tooltip, Box, Container } from '@material-ui/core';
 import { AmountField, BuyButton, StyledCard } from '../../StyledComponent/StyledInput';
 import { buy, setAlert } from '../../../actions/manager';
-import { isInt, isBigger } from '../../../utils/utils';
+import { isInt } from '../../../utils/utils';
 
 const NftItem = ({ nft, ryoshi, unlock, mintingNow, account, buy, setAlert }) => {
     const [amount, setAmount] = useState(1);
-
-
 
     const onBuy = (e, type) => {
         if (!isInt(amount) || amount < 1 || amount > nft.left) {

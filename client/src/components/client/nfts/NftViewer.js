@@ -12,7 +12,7 @@ const NftViewer = ({ nfts, totalCountNft, getNfts, ryoshi }) => {
 
     useEffect(() => {
         getNfts(1, 0, COUNT_PER_PAGE);
-        console.log('ryoshi', ryoshi);
+        // console.log('ryoshi', ryoshi);
     }, [getNfts]);
 
     const getMoreData = () => {

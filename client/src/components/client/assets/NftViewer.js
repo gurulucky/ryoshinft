@@ -20,7 +20,7 @@ const NftViewer = ({ email, account, nfts, zkNfts, withdrawNfts, unlock, loading
             getWithdrawNFTs();
         }
         // console.log('assets', nfts);
-    }, [email, account, unlock, getAssets, type]);
+    }, [email, account, unlock, getAssets, type, getWithdrawNFTs, getZkNFTs]);
 
     return (<>
         {/* {(type === "approve" && !nfts.length) && < Typography variant="body1" color="white" textAlign='center'>If you don't see your assets, please connect to your wallet or input your email to load</Typography>}
@@ -51,7 +51,7 @@ const NftViewer = ({ email, account, nfts, zkNfts, withdrawNfts, unlock, loading
         }
         <Grid container>
             {type === "approve" ?
-                nfts.filter(nft => nft.type === type).map(nft => <NftItem key={nft._id} nft={nft} />)
+                nfts.filter(nft => nft.type === type && nft.left > 0).map(nft => <NftItem key={nft._id} nft={nft} />)
                 :
                 (!loadingAssets && type === "mint") ?
                     zkNfts.map(nft => <NftItem key={nft.zksyncId} nft={nft} />)

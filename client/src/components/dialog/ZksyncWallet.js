@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Stack, Typography } from '@material-ui/core';
+import { Stack, Typography } from '@material-ui/core';
 import { BuyButton } from '../StyledComponent/StyledInput';
 
 const NETWORK = process.env.REACT_APP_NETWORK;

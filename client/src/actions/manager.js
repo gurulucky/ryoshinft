@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as zksync from 'zksync';
 import { ethers } from 'ethers';
 import { mintWiCry, mintWiFia, withdrawNFT, getTokenBalance, unlockAccount, getCIDFromContenthash } from '../lib/minter';
-import { isBigger, shortAddress } from '../utils/utils';
+// import { isBigger, shortAddress } from '../utils/utils';
 
 import {
   SET_STATUS,
@@ -36,7 +36,7 @@ const NETWORK = process.env.REACT_APP_NETWORK;
 const CREATORS = [process.env.REACT_APP_CREATOR, "0x490EEDCDe44ce5A78536A56fDf3984494a42253e"];
 const RYOSHI_PER_NFT = Number(process.env.REACT_APP_RYOSHI_PER_NFT); //
 const TOKEN_URI = 'https://ipfs.infura.io/ipfs/';
-const MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2/';///////   owner_address/nft/token_address  for get NFTs by owner
+// const MORALIS_API_URL = 'https://deep-index.moralis.io/api/v2/';///////   owner_address/nft/token_address  for get NFTs by owner
 const PARAMS_NET = `chain=${NETWORK}&format=decimal`;
 const MORALIS_OPTION = {
   headers: {
@@ -44,8 +44,7 @@ const MORALIS_OPTION = {
     'X-API-Key': 'niA5R3R0oohLOT3tYoYpl18HeDSIg8vCLH8MPENlxKvUjbJ3j4o41zA9p1G1E2qx'
   }
 };
-const ZKSYNC_FACTORY_ADDRESS_LINK = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_LINK;
-const ZKSYNC_FACTORY_ADDRESS_MAIN = process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_MAIN;
+const ZKSYNC_FACTORY_ADDRESS = NETWORK === 'rinkeby' ? process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_LINK : process.env.REACT_APP_ZKSYNC_FACTORY_ADDRESS_MAIN;
 
 export const setStatus = (status) => dispatch => {
   dispatch({
@@ -218,7 +217,6 @@ export const getNfts = (type, offset, limit) => async dispatch => {
     // dispatch(setStatus('nfts loading ...'));
     const res = await api.post('/ryoshi/nfts', { type, offset, limit });
     let fullNfts = [];
-    let content;
     let nfts = res.data.nfts;
     let totalCountNft = res.data.totalCountNft;
     dispatch({
@@ -235,10 +233,8 @@ export const getNfts = (type, offset, limit) => async dispatch => {
       return;
     }
     for (let i = 0; i < nfts.length; i++) {
-      await axios.get(nfts[i].tokenUri).then((response) => {
-        content = response.data;
-      });
-      fullNfts.push({ ...nfts[i], ...content });
+      let response = await axios.get(nfts[i].tokenUri);
+      fullNfts.push({ ...nfts[i], ...response.data });
     }
     console.log("getNfts", fullNfts);
     if (offset === 0) {
@@ -268,7 +264,6 @@ export const getAssets = (email, account) => async dispatch => {
     console.log(email, account);
     const res = await api.post('/ryoshi/assets', { email, account });
     let fullNfts = [];
-    let content;
     if (res.data.length === 0) {
       dispatch({
         type: GET_NFTS,
@@ -282,10 +277,8 @@ export const getAssets = (email, account) => async dispatch => {
     }
     dispatch(setStatus('nfts loading ...'));
     for (let i = 0; i < res.data.length; i++) {
-      await axios.get(res.data[i].tokenUri).then((response) => {
-        content = response.data;
-      });
-      fullNfts.push({ ...res.data[i], ...content });
+      let response = await axios.get(res.data[i].tokenUri);
+      fullNfts.push({ ...res.data[i], ...response.data });
     }
     console.log("getAssets", fullNfts);
     dispatch({
@@ -384,7 +377,7 @@ export const getWithdrawNFTs = () => async (dispatch, getState) => {
         type: LOADING_ASSETS,
         payload: true,
       });
-      const zk_res = await axios.get(`https://deep-index.moralis.io/api/v2/${zksyncWallet.address()}/nft/${ZKSYNC_FACTORY_ADDRESS_LINK}?${PARAMS_NET}`, MORALIS_OPTION);
+      const zk_res = await axios.get(`https://deep-index.moralis.io/api/v2/${zksyncWallet.address()}/nft/${ZKSYNC_FACTORY_ADDRESS}?${PARAMS_NET}`, MORALIS_OPTION);
       console.log(zk_res.data.result);
       const zkNfts = zk_res.data.result;
       if (zkNfts.length === 0) {
@@ -571,7 +564,7 @@ export const mint = (key) => async (dispatch, getState) => {
           // console.log('minted',nft);
           if (!transferRes.data.success) {
             dispatch(setAlert(true, `${amount} NFTs(${nft.name}) mint success. But you don't get ryoshi. Please contact with Ryoshi NFT team.`));
-          }else{
+          } else {
             dispatch(setAlert(true, `${amount} NFTs(${nft.name}) is minted successfully.`));
           }
         } catch (err) {

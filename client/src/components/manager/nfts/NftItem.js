@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Grid, Stack, Box, CardActionArea, CardActions, CardContent, Typography, Container, MenuItem } from '@material-ui/core';
 import { deleteNft, setShowNft } from '../../../actions/manager';
-import { BuyButton, StyledCard, StyledCheckbox, SelectShow } from '../../StyledComponent/StyledInput';
+import { BuyButton, StyledCard, SelectShow } from '../../StyledComponent/StyledInput';
 
 const NftItem = ({ nft, deleteNft, showNftData, setShowNft }) => {
     // const [checked, setChecked] = useState(true);

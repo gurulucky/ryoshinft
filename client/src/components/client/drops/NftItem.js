@@ -1,25 +1,9 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { Grid, Stack, CardActionArea, CardActions, CardContent, Typography, Tooltip, Box, Container } from '@material-ui/core';
-import { AmountField, BuyButton, StyledCard } from '../../StyledComponent/StyledInput';
-import { buy, setAlert } from '../../../actions/manager';
-import { isInt, isBigger } from '../../../utils/utils';
+import React from 'react';
+import { Grid, Stack, CardActionArea, CardContent, Typography, Container } from '@material-ui/core';
+import { StyledCard } from '../../StyledComponent/StyledInput';
 
 
-const NftItem = ({ nft, tokenBalance, mintingNow, account, buy, setAlert }) => {
-    const [amount, setAmount] = useState(1);
-
-    const onBuy = (e, type) => {
-        if (!isInt(amount) || amount < 1 || amount > nft.left) {
-            setAlert(true, "Please input correct amount.");
-            return;
-        }
-        if (Number(amount) > 250) {
-            setAlert(true, "Please input less than 250.");
-            return;
-        }
-        buy(account, nft, amount, type);
-    }
+const NftItem = ({ nft }) => {
 
     return (
         <Grid item xs={12} sm={6} md={4}  sx={{ my: "10px" }}>
@@ -62,10 +46,4 @@ const NftItem = ({ nft, tokenBalance, mintingNow, account, buy, setAlert }) => {
     )
 };
 
-const mapStateToProps = (state) => ({
-    account: state.manager.account,
-    tokenBalance: state.manager.tokenBalance,
-    mintingNow: state.manager.mintingNow
-})
-
-export default connect(mapStateToProps, { buy, setAlert })(NftItem);
+export default NftItem;

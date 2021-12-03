@@ -133,7 +133,6 @@ export const unlockAccount = async (syncWallet) => {
     if (!(await syncWallet.isSigningKeySet())) {
         if ((await syncWallet.getAccountId()) === undefined) {
             throw new Error("Unknown account");
-            return false;
         }
 
         try {
@@ -146,7 +145,7 @@ export const unlockAccount = async (syncWallet) => {
             });
 
             // Wait until the tx is committed
-            const changeReceipt = await changePubkey.awaitReceipt();
+            await changePubkey.awaitReceipt();
             console.log('unlock', await syncWallet.getAccountId());
             return true;
         } catch (error) {
@@ -161,7 +160,7 @@ export const unlockAccount = async (syncWallet) => {
 
 export const getTokenBalance = async (account, zksyncWallet) => {
     if (!account) {
-        return "0";
+        return 0;
     }
     let ryoshiContract = new window.web3.eth.Contract(ryoshi_token_abi, NETWORK === 'rinkeby' ? RYOSHI_ADDRESS_TEST : RYOSHI_ADDRESS_MAIN);
     let ryoshi_L1 = ethers.utils.formatEther(await ryoshiContract.methods.balanceOf(account).call());

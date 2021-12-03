@@ -148,7 +148,7 @@ router.post('/assets', async (req, res) => {
                     ownerId,
                     tokenUri: nft.tokenUri,
                     minPrice: nft.minPrice,
-                    amount: amount,
+                    left: amount,
                     type: "approve"
                 };
             });
@@ -337,9 +337,10 @@ router.post('/approve', async (req, res) => {
         }
         const result = await Nft.updateOne({ _id: id }, { $set: { approveOwners: updatedOwners, left: nft.left - amount } });
         const content = await axios.get(nft.tokenUri);
+        // console.log(content);
         ///send email
         if (result.n) {
-            const email = {
+            const email = { 
                 from: 'guruluckystacker@gmail.com',
                 to: req.body.owner,
                 subject: 'Ryoshi vision',

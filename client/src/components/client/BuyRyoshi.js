@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Stack, Container } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import ZkWalletDialog from '../dialog/ZksyncWallet';
 import { openZkWalletDLG } from '../../actions/manager';
 

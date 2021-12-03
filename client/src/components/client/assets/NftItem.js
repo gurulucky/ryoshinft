@@ -23,7 +23,7 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
             setGoodies(str);
         }
         console.log(nft);
-    }, [nft.emailContents, nft.type])
+    }, [nft])
 
     const onMint = (e) => {
         if (!isInt(amount) || amount < 1 || amount > nft.left) {
@@ -82,7 +82,7 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
                                 {
                                     nft.type === 'approve' ?
                                         <Typography variant="body2" color="rgb(221, 221, 221)">
-                                            {`Left: ${nft.amount}`}
+                                            {`Left: ${nft.left}`}
                                         </Typography>
                                         :
                                         <>
@@ -108,7 +108,7 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
                     </CardActionArea>
                     <CardActions>
                         {
-                            nft.amount && nft.type === "approve" ?
+                            nft.left && nft.type === "approve" ?
                                 <>
                                     {/* <Stack direction="row" justifyContent="center" spacing={2}> */}
                                     <AmountField name="amount" label="amount" type="number" size='small' InputProps={{ inputProps: { min: 1, max: nft.left } }} value={amount} onChange={(e) => setAmount(parseInt(e.target.value))}
@@ -134,7 +134,7 @@ const NftItem = ({ nft, account, mintingNow, setAlert, openInputKey, withdrawNFT
                                             <Typography>Withdraw to L1</Typography>
                                         </BuyButton>
                                     </>
-                                    :
+                                    : nft.type==="withdraw" &&
                                     <>
                                         <Box sx={{ flexGrow: 1 }} />
                                         <a href={`${ETHERSCAN_URL}?a=${nft.zksyncId}#inventory`} target='_blank' rel='noreferrer' style={{ color: "white" }}>View on etherscan</a>

@@ -54,10 +54,10 @@ const App = () => {
           <ThemeProvider theme={theme}>
             <Stack direction='row' id="myNav_left" className="overlay_left" justifyContent='flex-end' alignItems='center' onClick={closeNav}>
               <h1>Ryoshi Vision&nbsp;</h1>
-              <img src="/img/ryo_left.png" style={{ width: '20%' }} />
+              <img src="/img/ryo_left.png" style={{ width: '20%' }} alt="splash"/>
             </Stack>
             <Stack direction='row' id="myNav_right" className="overlay_right" justifyContent='flex-start' alignItems='center' onClick={closeNav}>
-              <img src="/img/ryo_right.png" style={{ width: '20%' }} />
+              <img src="/img/ryo_right.png" style={{ width: '20%' }} alt="splach"/>
               <h1>Concerts Presents</h1>
             </Stack>
             <div className='bubbles'>
