@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import Particle from 'react-particles-js';
-import particlesConfig from './particleConfig.json';
+// import Particle from 'react-particles-js';
+// import particlesConfig from './particleConfig.json';
 import { setAccount, isManager, setAlert, openZkWalletDLG } from '../../actions/manager';
 import { Stack, Typography, Hidden, IconButton } from '@material-ui/core';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -86,7 +86,7 @@ const Navbar = ({ manager: { account, unlock, zksyncWallet, alertOpen, alertText
   return (
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: "rgb(19, 5, 5)", p: 1 }}>
-        <Particle params={particlesConfig} className="nav_particle_container" />
+        {/* <Particle params={particlesConfig} className="nav_particle_container" /> */}
         <Stack direction="row" alignItems="center" sx={{ zIndex: '1' }} spacing={2}>
           <Hidden mdUp>
             <IconButton
